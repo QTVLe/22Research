@@ -9,4 +9,4 @@ The files are as follows:
 
 Each picture of the form "___.png" can be found in the research paper and was produced in Python.
 
-PythonFile is a file containing the Python code used for this research paper.
+PythonFile is a file containing the Python code used for this research paper to collect the satisfying tuples, using a novel algorithm developed by Mario Taccarelli.
