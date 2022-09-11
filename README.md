@@ -7,4 +7,4 @@ The files are as follows:
 "all average data" is a file containing all of the averages of the satisfying tuples found.
 "analysis" is a file containing some graphs and tables that has been done on Excel.
 
-Each picture can be found in the research paper and was produced in Python.
+Each picture of the form "___.png" can be found in the research paper and was produced in Python.
