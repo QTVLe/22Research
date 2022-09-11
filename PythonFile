@@ -1,0 +1,128 @@
+import itertools
+import csv
+import math
+from collections import deque
+import pandas as pd
+import time
+
+
+
+# Find pseudo-satisfying tuples
+def pseudo(X):
+    sum_of_x = sum(X)
+    length_of_x = len(X)
+
+    if sum_of_x <= 2* length_of_x and sum_of_x > length_of_x * math.log(3,2):
+        return True
+    else:
+        return False
+
+
+# Find F(x)
+def N(X):
+    length_of_x = len(X)
+
+    a = 0
+    for i in range(1, length_of_x + 1):
+        b = 0
+        for j in range(i-1):
+            b += X[j]
+
+        a += ((3**(length_of_x - i)) * 2**b)
+
+    return a
+
+def D(X):
+    sum_of_x = sum(X)
+    length_of_x = len(X)
+
+    return (2**(sum_of_x) - 3**(length_of_x))
+def F(X):
+    return N(X)/ D(X)
+
+def check_if_integer(x):
+    if math.floor(x) == math.ceil(x):
+        return True
+
+
+# Generate Rotations
+def rotation(X, i):
+    l1 = list(X)
+    l1 = deque(l1)
+    l1.rotate(i)
+    return l1
+
+# Average of X
+def E(X):
+    sum_of_x = sum(X)
+    length_of_x = len(X)
+
+    return sum_of_x / length_of_x
+
+
+# ------------------------ for n dimentions -----------------------------
+
+
+while True:
+
+    start = time.time()
+    
+    n = input("Enter tuple length or (q)uit -->   ")
+    if n == "q" or n == "Q":
+        break
+    else:
+        n = int(n)
+
+    # find the upper limit
+
+    upper_limit = 2 * n
+                    
+    # Finding all satisfying tuples
+
+    temp = []
+
+    # Writing in the tuple
+    file_name = str(n) + ".csv"
+    with open(file_name, mode="w", newline= '') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(["Tuples", "F(X)", "E(X)", "Type"])
+
+        # creating main tuple
+        for i in range(upper_limit + 1):
+            temp.append(i)
+
+    
+        counter = 0
+        while len(temp) != 0:
+            p = (itertools.product(temp, repeat = (n-1)))
+            for v in p:
+                temp2 = list(v)
+                temp2.insert(0, counter)
+                
+                # check if it is satisfying
+                if pseudo(tuple(temp2)) == True:
+                    funx = F(tuple(temp2))
+                    if check_if_integer(funx) == True:
+
+                        # Average of X
+                        Ex = E(tuple(temp2))
+                        writer.writerow([str(tuple(temp2)), funx, Ex, "Unique"])
+
+                        # write rotations
+                        for i in range(1,n):
+                            Xr = rotation(tuple(temp2), i)
+                            writer.writerow([str(tuple(Xr)), F(Xr), Ex, ("rotation" + str(i))])
+
+            counter += 1
+            temp.pop(0)
+
+
+    # dropping duplicates
+    df = pd.read_csv(file_name)
+    df.drop_duplicates(subset = ["Tuples"], inplace=True)
+
+    df.to_csv(file_name, index=False)
+
+    end = time.time()
+
+    print("time taken (s) --> "+ str(end- start))
